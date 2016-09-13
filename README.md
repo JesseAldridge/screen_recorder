@@ -1,4 +1,7 @@
 
+This tool will take a screenshot of your desktop once every five seconds.
+Screenshots older than a month are deleted automatically.
+
 Install requirements:
 
 ```

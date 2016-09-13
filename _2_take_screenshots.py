@@ -12,7 +12,7 @@ secs_per_shot = 5
 debug_mode = True
 
 def grab_pngs(total_shots=None):
-  ' Save a png of the screen every 10 seconds. Pause on low memory. '
+  ' Save a png of the screen every several seconds. Pause on low memory. '
 
   initial_memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
   max_mem = initial_memory * 2.5
