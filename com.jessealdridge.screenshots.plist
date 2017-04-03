@@ -5,12 +5,12 @@
   <key>Label</key>
   <string>com.jessealdridge.screenshots</string>
   <key>Program</key>
-  <string>/Users/jessealdridge/Dropbox/screen_recorder/monitor_screen_rec.sh</string>
+  <string>/Users/jesse_aldridge/Dropbox/screen_recorder/monitor_screen_rec.sh</string>
   <key>RunAtLoad</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>/Users/jessealdridge/screenshots.log</string>
+  <string>/Users/jesse_aldridge/screenshots.log</string>
   <key>StandardErrorPath</key>
-  <string>/Users/jessealdridge/screenshots.err</string>
+  <string>/Users/jesse_aldridge/screenshots.err</string>
 </dict>
 </plist>
