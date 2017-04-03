@@ -41,9 +41,7 @@ def grab_pngs(total_shots=None):
       raise
 
 def remove_old_screenshots():
-  ' Remove screenshots over 24 hours old. '
-
-  yesterday = datetime.now() - timedelta(hours=24)
+  yesterday = datetime.now() - timedelta(hours=24 * 4)
   print 'yesterday:', yesterday
   dir_path = _1_save_image.screens_path
   for paths in (

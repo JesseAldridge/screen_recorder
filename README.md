@@ -6,7 +6,7 @@ Install requirements:
 
 ```
 brew install imagemagick
-pip install -r requirements.txt
+pip install --user -r requirements.txt
 ```
 
 Modify `com.jessealdridge.screenshots.plist`, replace `"/Users/jessealdridge"` with your home directory.
