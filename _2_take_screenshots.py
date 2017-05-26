@@ -8,7 +8,8 @@ import psutil
 import _1_save_image, _0_mem_logger
 from _1_save_image import os_specific
 
-secs_per_shot = 5
+SECS_PER_SHOT = 5
+NUM_DAYS_TO_SAVE = 6
 debug_mode = True
 
 def grab_pngs(total_shots=None):
@@ -32,7 +33,7 @@ def grab_pngs(total_shots=None):
       mem_percent = psutil.virtual_memory().percent
       if mem_percent < 90:
         save_tagged_screenshot()
-      time.sleep(secs_per_shot)
+      time.sleep(SECS_PER_SHOT)
   try:
     loop()
   except Exception as e:
@@ -41,7 +42,7 @@ def grab_pngs(total_shots=None):
       raise
 
 def remove_old_screenshots():
-  yesterday = datetime.now() - timedelta(hours=24 * 6)
+  yesterday = datetime.now() - timedelta(hours=24 * NUM_DAYS_TO_SAVE)
   print 'yesterday:', yesterday
   dir_path = _1_save_image.screens_path
   for paths in (
