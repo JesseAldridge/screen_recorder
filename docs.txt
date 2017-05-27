@@ -1,0 +1,8 @@
+launch.sh
+  launchctl load ~/Library/LaunchAgents/com.jessealdridge.screenshots.plist
+    _2_take_screenshots.grab_pngs
+      <string>/Users/jesse_aldridge/Dropbox/screen_recorder/monitor_screen_rec.sh</string>
+        ~/Dropbox/screen_recorder/_2_take_screenshots.py
+          loop
+            while True:
+              remove_old_screenshots
