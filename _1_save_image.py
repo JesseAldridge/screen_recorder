@@ -18,12 +18,18 @@ screens_path = os.path.expanduser(os.path.join('~', 'screenshots'))
 def init_dirs():
   ' Create directories if needed. '
 
-  thumb_dir = os.path.join(screens_path, 'thumbnails')
   if not os.path.exists(screens_path):
     os.mkdir(screens_path)
+
+  thumb_dir = os.path.join(screens_path, 'thumbnails')
   if not os.path.exists(thumb_dir):
     os.mkdir(thumb_dir)
-  return screens_path, thumb_dir
+
+  webcam_dir = os.path.join(screens_path, 'webcam')
+  if not os.path.exists(webcam_dir):
+    os.mkdir(webcam_dir)
+
+  return screens_path, thumb_dir, webcam_dir
 
 def save_image(temp_file, final_path, is_thumb=False):
   ' Save the img.  Scale down thumbnails. '
@@ -46,13 +52,14 @@ def my_log(message):
 
 if __name__ == '__main__':
   my_log("intentional test error")
-  screen_dir, thumb_dir = init_dirs()
+  screen_dir, thumb_dir, webcam_dir = init_dirs()
   for _ in range(10):
     _0_mem_logger.log()
     temp_file = os_specific.take_screenshot()
     save_image(temp_file, os.path.join(screen_dir, 'test.png'))
     print 'saved image'
-    save_image(temp_file, os.path.join(screen_dir, 'test.png'), True)
+    save_image(temp_file, os.path.join(thumb_dir, 'test.png'), True)
     print 'saved thumbnail'
+
     time.sleep(5)
     os.remove(temp_file.name)

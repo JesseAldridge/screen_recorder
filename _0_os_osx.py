@@ -1,4 +1,5 @@
 import subprocess, os, time, re, tempfile
+from datetime import datetime
 
 class g:
   cached_size = None
@@ -29,9 +30,18 @@ def take_screenshot():
   subprocess.Popen(cmd_line.split()).communicate()
   return tf
 
+def take_webcam_image(dir_path):
+  ' Take a snapshot and save to passed dir. '
+
+  filename = datetime.now().strftime('%Y-%m-%d_%H.%M.%S') + '.png'
+  out_path = os.path.join(dir_path, filename)
+  print 'out_path:', out_path
+  subprocess.Popen(['/usr/local/bin/imagesnap', out_path]).communicate()
+
 if __name__ == '__main__':
   for i in range(10):
     print get_screen_size()
   for i in range(2):
     print take_screenshot()
+    take_webcam_image(os.getcwd())
     time.sleep(1)

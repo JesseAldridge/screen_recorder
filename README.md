@@ -6,6 +6,7 @@ Install requirements:
 
 ```
 brew install imagemagick
+brew install imagesnap
 pip install --user -r requirements.txt
 ```
 

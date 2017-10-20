@@ -6,5 +6,9 @@ def get_screen_size():
 def take_screenshot():
   return ImageGrab.grab()
 
+def take_webcam_image():
+  # todo
+  pass
+
 if __name__ == '__main__':
   print get_screen_size()

@@ -12,7 +12,7 @@ SECS_PER_SHOT = 5
 NUM_DAYS_TO_SAVE = 6
 debug_mode = True
 
-def grab_pngs(total_shots=None):
+def start_capturing(total_shots=None):
   ' Save a png of the screen every several seconds. Pause on low memory. '
 
   initial_memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
@@ -32,7 +32,7 @@ def grab_pngs(total_shots=None):
         break
       mem_percent = psutil.virtual_memory().percent
       if mem_percent < 90:
-        save_tagged_screenshot()
+        capture_frame()
       time.sleep(SECS_PER_SHOT)
   try:
     loop()
@@ -47,7 +47,9 @@ def remove_old_screenshots():
   dir_path = _1_save_image.screens_path
   for paths in (
     glob.glob(os.path.join(dir_path, "*.png")),
-    glob.glob(os.path.join(dir_path, "thumbnails", "*.png"))):
+    glob.glob(os.path.join(dir_path, "thumbnails", "*.png")),
+    glob.glob(os.path.join(dir_path, "webcam", "*.jpg")),
+  ):
     for path in paths:
       try:
         file_dt = datetime.strptime(os.path.basename(path).split(".png")[0], '%Y-%m-%d_%H.%M.%S')
@@ -55,32 +57,31 @@ def remove_old_screenshots():
         continue
       if file_dt > yesterday:
         break
-      assert path.endswith(".png")
+      assert path.endswith(".png") or path.endswith(".jpg")
       os.remove(path)
 
-def save_tagged_screenshot():
+def capture_frame():
   ' Take a screenshot.  Save the image and thumbnail.  Log errors. '
 
-  screen_dir, thumb_dir = _1_save_image.init_dirs()
+  screen_dir, thumb_dir, webcam_dir = _1_save_image.init_dirs()
 
   try:
     temp_file = os_specific.take_screenshot()
+    os_specific.take_webcam_image(webcam_dir)
   except IOError as e:
     _1_save_image.my_log("I/O error({0}): {1}".format(e.errno, e.strerror))
   else:
-    timestamp = '_'.join(str(
-        datetime.now()).split()).replace(':', '.').rsplit('.', 1)[0]
+    timestamp = '_'.join(str(datetime.now()).split()).replace(':', '.').rsplit('.', 1)[0]
     filename = timestamp + '.png'
 
     print 'filename:', filename
     _1_save_image.save_image(temp_file, os.path.join(screen_dir, filename))
-    _1_save_image.save_image(
-      temp_file, os.path.join(thumb_dir, filename), is_thumb=True)
+    _1_save_image.save_image(temp_file, os.path.join(thumb_dir, filename), is_thumb=True)
   finally:
     os.remove(temp_file.name)
 
 if __name__ == '__main__':
-  grab_pngs()
+  start_capturing()
 
   # import cProfile, pstats
   # def read_results():
