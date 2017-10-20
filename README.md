@@ -31,6 +31,6 @@ To stop taking screenshots run:
 `launchctl unload ~/Library/LaunchAgents/com.jessealdridge.screenshots.plist`
 
 Using the default config, one screenshot will be taken every five seconds and six days of
-screenshots will be stored.  They should take up about five GB worth of hard-drive space.
+screenshots will be stored.  They should take up about 10-20 GB worth of hard-drive space.
 
 [MIT License](https://opensource.org/licenses/MIT)
