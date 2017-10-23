@@ -67,7 +67,7 @@ def capture_frame():
 
   try:
     temp_file = os_specific.take_screenshot()
-    os_specific.take_webcam_image(webcam_dir)
+    # os_specific.take_webcam_image(webcam_dir)
   except IOError as e:
     _1_save_image.my_log("I/O error({0}): {1}".format(e.errno, e.strerror))
   else:
