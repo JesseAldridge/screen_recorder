@@ -10,7 +10,7 @@ from _1_save_image import os_specific
 
 SECS_PER_SHOT = 5
 NUM_DAYS_TO_SAVE = 6
-debug_mode = True
+debug_mode = False
 
 def start_capturing(total_shots=None):
   ' Save a png of the screen every several seconds. Pause on low memory. '
@@ -39,6 +39,7 @@ def start_capturing(total_shots=None):
   except Exception as e:
     _1_save_image.my_log(unicode(e))
     if debug_mode:
+      _1_save_image.my_log('quitting because debug_mode is on')
       raise
 
 def remove_old_screenshots():
