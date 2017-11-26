@@ -8,9 +8,9 @@ import psutil
 import _1_save_image, _0_mem_logger
 from _1_save_image import os_specific
 
-SECS_PER_SHOT = 5
+SECS_PER_SHOT = 10 # at 5 the fan on my old macbook turns on
 NUM_DAYS_TO_SAVE = 6
-debug_mode = False
+debug_mode = True
 
 def start_capturing(total_shots=None):
   ' Save a png of the screen every several seconds. Pause on low memory. '
