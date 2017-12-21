@@ -30,6 +30,7 @@ def start_capturing(total_shots=None):
     num_shots = 0
     while True:
       curr_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+      print 'curr_mem:', curr_mem
       if curr_mem > max_mem:
         print 'using too much memory'
 
@@ -50,23 +51,26 @@ def start_capturing(total_shots=None):
       raise
 
 def remove_old_screenshots():
-  yesterday = datetime.now() - timedelta(hours=24 * NUM_DAYS_TO_SAVE)
-  print 'yesterday:', yesterday
+  keep_after_date = datetime.now() - timedelta(hours=24 * NUM_DAYS_TO_SAVE)
+  print 'keep_after_date:', keep_after_date
   dir_path = _1_save_image.screens_path
   for paths in (
     glob.glob(os.path.join(dir_path, "*.png")),
     glob.glob(os.path.join(dir_path, "thumbnails", "*.png")),
     glob.glob(os.path.join(dir_path, "webcam", "*.jpg")),
   ):
-    for path in paths:
+    for path in sorted(paths):
       try:
         file_dt = datetime.strptime(os.path.basename(path).split(".png")[0], '%Y-%m-%d_%H.%M.%S')
       except ValueError:
+        print 'value error, path: {}'.format(path)
         continue
-      if file_dt > yesterday:
+      if file_dt > keep_after_date:
         break
-      assert path.endswith(".png") or path.endswith(".jpg")
-      os.remove(path)
+      if path.endswith(".png") or path.endswith(".jpg"):
+        print 'deleting:', path
+        os.remove(path)
+
 
 def capture_frame():
   ' Take a screenshot.  Save the image and thumbnail.  Log errors. '
