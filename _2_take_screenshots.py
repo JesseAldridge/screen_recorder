@@ -16,7 +16,7 @@ if os.path.exists(config_path):
   config_dict = json.loads(json_text)
 
 SECS_PER_SHOT = config_dict.get('secs_per_shot', 5)
-NUM_DAYS_TO_SAVE = 6
+NUM_DAYS_TO_SAVE = 15
 debug_mode = True
 
 def start_capturing(total_shots=None):
