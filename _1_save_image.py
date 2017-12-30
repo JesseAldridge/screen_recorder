@@ -1,17 +1,26 @@
 import os, sys, subprocess, resource, time, threading
 from datetime import datetime
 
-from PIL import Image
+import requests
+from awsauth import S3Auth
 
 import _0_mem_logger
+import config
 
 if sys.platform == 'darwin':
   import _0_os_osx as os_specific
 elif _platform == 'win32':
   import _0_os_windows as os_specific
 else:
-  print 'Unsupported OS.  Please write an adaptor and submit a pull request.'
+  print 'Unsupported OS'
   sys.exit()
+
+with open(os.path.expanduser("~/.boto")) as f:
+  lines = f.read().splitlines()
+ACCESS_KEY = lines[1].split(' = ')[1]
+SECRET_KEY = lines[2].split(' = ')[1]
+
+USERNAME = config.config_dict.get('username', 5)
 
 screens_path = os.path.expanduser(os.path.join('~', 'screenshots'))
 
@@ -45,6 +54,15 @@ def save_image(temp_file, final_path, is_thumb=False):
     proc.communicate()
   finally:
     timer.cancel()
+
+  bucket_type = 'thumbs' if is_thumb else 'normal'
+  bucket_name = 'jca-screenshots-{}-{}'.format(USERNAME, bucket_type)
+  filename = os.path.basename(final_path)
+  url = 'http://{}.s3.amazonaws.com/{}'.format(bucket_name, filename)
+  with open(final_path, 'rb') as f:
+    resp = requests.put(url, data=f, auth=S3Auth(ACCESS_KEY, SECRET_KEY))
+  if resp.status_code != 200:
+    my_log('error during put: {}, {}'.format(resp.status_code, resp.content))
 
 def my_log(message):
   time_str = datetime.utcnow().replace(microsecond=0)

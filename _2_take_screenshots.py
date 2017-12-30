@@ -7,15 +7,9 @@ import psutil
 
 import _1_save_image, _0_mem_logger
 from _1_save_image import os_specific
+import config
 
-config_path = os.path.expanduser('~/.screen_recorder_config')
-config_dict = {}
-if os.path.exists(config_path):
-  with open(config_path) as f:
-    json_text = f.read()
-  config_dict = json.loads(json_text)
-
-SECS_PER_SHOT = config_dict.get('secs_per_shot', 5)
+SECS_PER_SHOT = config.config_dict.get('secs_per_shot', 5)
 NUM_DAYS_TO_SAVE = 15
 debug_mode = True
 
