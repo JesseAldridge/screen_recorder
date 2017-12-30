@@ -1,11 +1,11 @@
 
-def compute_cost(storage, convert_to_video=False):
+def compute_cost(storage, compressed=False):
 
     # raw screenshots
     # actually more like 200-300 KB on my laptop
         # but are those half-size?
     mb_per_image = 1.
-    if(convert_to_video):
+    if(compressed):
         mb_per_image *= .3
 
     # number of days to store
@@ -13,11 +13,11 @@ def compute_cost(storage, convert_to_video=False):
 
     cost_per_gb_per_month = {'s3':.0125, 'glacier':.004}[storage]
 
-    # 1 image / 5 seconds * 60 seconds * 60 minutes * 8 hours
-    images_per_day = 1. / 10 * 60 * 60 * 24  # 8640 images per day
+    # 1 image / 10 seconds * 60 seconds * 60 minutes * 16 hours
+    images_per_day = 1. / 10 * 60 * 60 * 16  # ~6K images per day
     print 'storing {} images per day on {} {}'.format(
         int(round(images_per_day)), storage,
-        'in video format' if convert_to_video else '')
+        'in compressed format' if compressed else '')
 
     gb_per_day = mb_per_image / 1000. * images_per_day
     print 'gb per year: ', gb_per_day * 30 * 12
@@ -41,8 +41,8 @@ compute_cost('glacier')
 print
 compute_cost('s3')
 print
-compute_cost('s3', convert_to_video=True)
+compute_cost('s3', compressed=True)
 print
-compute_cost('glacier', convert_to_video=True)
+compute_cost('glacier', compressed=True)
 print
 
