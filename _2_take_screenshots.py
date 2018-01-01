@@ -77,7 +77,7 @@ def capture_frame():
   except IOError as e:
     _1_save_image.my_log("I/O error({0}): {1}".format(e.errno, e.strerror))
   else:
-    timestamp = '_'.join(str(datetime.now()).split()).replace(':', '.').rsplit('.', 1)[0]
+    timestamp = '_'.join(str(datetime.utcnow()).split()).replace(':', '.').rsplit('.', 1)[0]
     filename = timestamp + '.png'
 
     print 'filename:', filename

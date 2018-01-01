@@ -1,4 +1,6 @@
 
+import config
+
 def compute_cost(storage, compressed=False):
 
     # raw screenshots
@@ -11,10 +13,10 @@ def compute_cost(storage, compressed=False):
     # number of days to store
     num_days = 365
 
-    cost_per_gb_per_month = {'s3':.0125, 'glacier':.004}[storage]
+    cost_per_gb_per_month = {'s3':.0245, 'glacier':.004}[storage]
 
     # 1 image / 10 seconds * 60 seconds * 60 minutes * 16 hours
-    images_per_day = 1. / 10 * 60 * 60 * 16  # ~6K images per day
+    images_per_day = 1. / config.config_dict['secs_per_shot'] * 60 * 60 * 16  # ~6K images per day
     print 'storing {} images per day on {} {}'.format(
         int(round(images_per_day)), storage,
         'in compressed format' if compressed else '')
