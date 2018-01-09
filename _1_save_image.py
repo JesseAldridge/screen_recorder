@@ -59,10 +59,14 @@ def save_image(temp_file, final_path, is_thumb=False):
   bucket_name = 'jca-screenshots-{}-{}'.format(USERNAME, bucket_type)
   filename = os.path.basename(final_path)
   url = 'http://{}.s3.amazonaws.com/{}'.format(bucket_name, filename)
-  with open(final_path, 'rb') as f:
-    resp = requests.put(url, data=f, auth=S3Auth(ACCESS_KEY, SECRET_KEY))
-  if resp.status_code != 200:
-    my_log('error during put: {}, {}'.format(resp.status_code, resp.content))
+  try:
+    with open(final_path, 'rb') as f:
+      resp = requests.put(url, data=f, auth=S3Auth(ACCESS_KEY, SECRET_KEY))
+  except requests.exceptions.ConnectionError:
+    my_log('ConnectionError')
+  else:
+    if resp.status_code != 200:
+      my_log('error during put: {}, {}'.format(resp.status_code, resp.content))
 
 def my_log(message):
   time_str = datetime.utcnow().replace(microsecond=0)
@@ -71,6 +75,20 @@ def my_log(message):
 if __name__ == '__main__':
   my_log("intentional test error")
   screen_dir, thumb_dir, webcam_dir = init_dirs()
+
+  # test with no internet
+  original_put = requests.put
+
+  def put_no_internet(*a, **kw):
+    raise requests.exceptions.ConnectionError
+
+  requests.put = put_no_internet
+
+  temp_file = os_specific.take_screenshot()
+  save_image(temp_file, os.path.join(screen_dir, 'test.png'))
+
+  requests.put = original_put
+
   for _ in range(10):
     _0_mem_logger.log()
     temp_file = os_specific.take_screenshot()
