@@ -3,7 +3,7 @@
 import glob, os, shutil, time, resource, sys, json
 from datetime import datetime, timedelta
 
-import psutil
+import psutil, pytz
 
 import _1_save_image, _0_mem_logger
 from _1_save_image import os_specific
@@ -18,15 +18,15 @@ def start_capturing(total_shots=None):
 
   initial_memory = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
   max_mem = initial_memory * 2.5
-  print 'will stop if memory exceeds:', max_mem
+  log('will stop if memory exceeds:', max_mem)
 
   def loop():
     num_shots = 0
     while True:
       curr_mem = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
-      print 'curr_mem:', curr_mem
+      log('curr_mem:', curr_mem)
       if curr_mem > max_mem:
-        print 'using too much memory'
+        log('using too much memory according to resource.getrusage')
 
       remove_old_screenshots()
       num_shots += 1
@@ -35,6 +35,8 @@ def start_capturing(total_shots=None):
       mem_percent = psutil.virtual_memory().percent
       if mem_percent < 90:
         capture_frame()
+      else:
+        log('skipping screenshot due to memory usage')
       time.sleep(SECS_PER_SHOT)
   try:
     loop()
@@ -46,7 +48,7 @@ def start_capturing(total_shots=None):
 
 def remove_old_screenshots():
   keep_after_date = datetime.now() - timedelta(hours=24 * NUM_DAYS_TO_SAVE)
-  print 'keep_after_date:', keep_after_date
+  log('keep_after_date:', keep_after_date)
   dir_path = _1_save_image.screens_path
   for paths in (
     glob.glob(os.path.join(dir_path, "*.png")),
@@ -57,12 +59,12 @@ def remove_old_screenshots():
       try:
         file_dt = datetime.strptime(os.path.basename(path).split(".png")[0], '%Y-%m-%d_%H.%M.%S')
       except ValueError:
-        print 'value error, path: {}'.format(path)
+        log('value error, path: {}'.format(path))
         continue
       if file_dt > keep_after_date:
         break
       if path.endswith(".png") or path.endswith(".jpg"):
-        print 'deleting:', path
+        log('deleting:', path)
         os.remove(path)
 
 
@@ -80,11 +82,15 @@ def capture_frame():
     timestamp = '_'.join(str(datetime.utcnow()).split()).replace(':', '.').rsplit('.', 1)[0]
     filename = timestamp + '.png'
 
-    print 'filename:', filename
+    log('filename:', filename)
     _1_save_image.save_image(temp_file, os.path.join(screen_dir, filename))
     _1_save_image.save_image(temp_file, os.path.join(thumb_dir, filename), is_thumb=True)
   finally:
     os.remove(temp_file.name)
+
+def log(*args):
+  iso_timestamp = pytz.timezone("UTC").localize(datetime.utcnow()).isoformat()
+  print '{} {}'.format(iso_timestamp, ' '.join(str(x) for x in args))
 
 if __name__ == '__main__':
   start_capturing()
