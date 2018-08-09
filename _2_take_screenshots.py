@@ -10,7 +10,7 @@ from _1_save_image import os_specific
 import config
 
 SECS_PER_SHOT = config.config_dict.get('secs_per_shot', 5)
-NUM_DAYS_TO_SAVE = 15
+NUM_DAYS_TO_SAVE = 13
 debug_mode = True
 
 def start_capturing(total_shots=None):
